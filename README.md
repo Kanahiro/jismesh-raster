@@ -89,5 +89,5 @@ jismesh-raster meshdata.csv mesh.tif --valuecol 7 --strategy sum
 -   `valuecol`のデフォルト値は`1`なので、上記の場合省略出来る
 
 ```sh
-jismesh-raster meshdata.csv mesh.tif --strategy mean
+jismesh-raster meshdata.csv mesh.tif --strategy mean --noheader
 ```
