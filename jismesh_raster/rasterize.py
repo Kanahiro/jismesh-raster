@@ -71,7 +71,7 @@ def rasterize(csvfile: str,
               output: str,
               meshcol=0,
               valuecol=1,
-              aggr_strategy="sum",
+              aggr_strategy="",
               nodata=-9999.0,
               noheader=False):
     meshcode_col = 0 if meshcol is None else int(meshcol)
