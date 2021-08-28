@@ -55,6 +55,7 @@ mesh1kmid,prefcode,citycode,year,month,dayflag,timezone,population
 53394528,13,13101,2019,01,2,0,73526
 ```
 
+-   上記 CSV は`meshdata.csv`、出力する TIF ファイルを`mesh.tif`とする
 -   メッシュコードのカラムは左端から数えて 1 列目の`mesh1kmid`、メッシュ画像にしたい値は 8 列目の`population`である
 -   このスクリプトでは 0 をスタートとして数えるので、`0`列目、`7`列目と読み替える
 -   もし複数行にわたって同一のメッシュコードが存在する場合は、その`合計値`を求める
