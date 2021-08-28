@@ -72,7 +72,7 @@ jismesh-raster meshdata.csv mesh.tif --meshcol 0 --valuecol 7 --strategy sum --n
 jismesh-raster meshdata.csv mesh.tif --valuecol 7 --strategy sum
 ```
 
--   `strategy`を指定しない場合に複数行にわたって同一のメッシュコードが存在 s うる場合は、うちひとつのデータがメッシュの値となる
+-   `strategy`を指定しない場合に複数行にわたって同一のメッシュコードが存在する場合は、うちひとつのデータがメッシュの値となる
 
 以下のような CSV の場合
 
