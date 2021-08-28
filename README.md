@@ -35,11 +35,13 @@ optional arguments:
   --noheader CSVにヘッダーが無い場合に入力
 ```
 
-## インストールと使い方
+## インストール
 
 ```sh
 pip install jismesh-raster
 ```
+
+## 使い方
 
 以下の形式の CSV を例とする（出典：[全国の人流オープンデータ](https://www.geospatial.jp/ckan/dataset/mlit-1km-fromto)）
 
