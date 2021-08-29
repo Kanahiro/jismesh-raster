@@ -127,10 +127,12 @@ def rasterize(csvfile: str,
                          ].pivot(values=value_colname, index='y_index', columns='x_index')
 
     # 存在しないメッシュを内挿
-    matrix2d_df = matrix2d_df.join(
-        pd.DataFrame(index=[], columns=append_x_indexes))
-    matrix2d_df = pd.concat([matrix2d_df, pd.DataFrame(
-        index=append_y_indexes, columns=matrix2d_df.columns)]).fillna(-9999.0 if nodata is None else float(nodata))
+    if len(append_x_indexes) > 0:
+        matrix2d_df = matrix2d_df.join(
+            pd.DataFrame(index=[], columns=append_x_indexes))
+    if len(append_y_indexes) > 0:
+        matrix2d_df = pd.concat([matrix2d_df, pd.DataFrame(
+            index=append_y_indexes, columns=matrix2d_df.columns)]).fillna(-9999.0 if nodata is None else float(nodata))
 
     # メッシュの地図上の配置と同じ2次元配列に並べる
     matrix2d_df = matrix2d_df.sort_index(ascending=False)
