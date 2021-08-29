@@ -6,7 +6,7 @@
 
 -   標準地域メッシュは、経緯度を一定のルールで均等に分割して得られるメッシュである
 -   メッシュの形状自体に意味はなく、紐付けられる集計値が重要であり、ベクターデータよりラスターデータが適している
--   本スクリプトでは、1 つメッシュに 1 ピクセルを割り当て、同時に適切なワールドファイルを出力する
+-   本スクリプトでは、1 メッシュに 1 ピクセルを割り当て、同時に適切なワールドファイルを出力する
 
 ## 出力データと仕様
 
@@ -31,7 +31,7 @@ optional arguments:
   --meshcol  メッシュコードのカラムを0から始まる番号、デフォルトは0
   --valuecol 値のカラムを0から始まる番号、デフォルトは1
   --strategy 集計方法、mean, median, min, max, stddev, sum
-  --nodata   データがないメッシュにセットする値、デフォルトは-9999.0
+  --nodata   データがないメッシュにセットする値、デフォルトはnan
   --noheader CSVにヘッダーが無い場合に入力
 ```
 
@@ -66,7 +66,7 @@ jismesh-raster meshdata.csv mesh.tif --meshcol 0 --valuecol 7 --strategy sum --n
 ```
 
 -   `meshcol`のデフォルト値は`0`なので、今回の場合省略出来る
--   `nodata`のデフォルト値は`-9999.0`なので、それでもよければ省略出来る
+-   `nodata`のデフォルト値は`nan`なので、それでもよければ省略出来る
 
 ```sh
 jismesh-raster meshdata.csv mesh.tif --valuecol 7 --strategy sum
