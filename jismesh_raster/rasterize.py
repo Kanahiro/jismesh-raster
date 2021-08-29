@@ -74,13 +74,11 @@ def rasterize(csvfile: str,
               aggr_strategy="",
               nodata=-9999.0,
               noheader=False):
-    meshcode_col = 0 if meshcol is None else int(meshcol)
-    value_col = 1 if valuecol is None else int(valuecol)
 
     csv_df = pd.read_csv(
         csvfile, header=None) if noheader else pd.read_csv(csvfile)
-    meshcode_colname = csv_df.columns[meshcode_col]
-    value_colname = csv_df.columns[value_col]
+    meshcode_colname = csv_df.columns[meshcol]
+    value_colname = csv_df.columns[valuecol]
     csv_df = csv_df[[meshcode_colname, value_colname]].astype(
         {meshcode_colname: str, value_colname: float})
 
@@ -132,7 +130,7 @@ def rasterize(csvfile: str,
             pd.DataFrame(index=[], columns=append_x_indexes))
     if len(append_y_indexes) > 0:
         matrix2d_df = pd.concat([matrix2d_df, pd.DataFrame(
-            index=append_y_indexes, columns=matrix2d_df.columns)]).fillna(-9999.0 if nodata is None else float(nodata))
+            index=append_y_indexes, columns=matrix2d_df.columns)]).fillna(float(nodata))
 
     # メッシュの地図上の配置と同じ2次元配列に並べる
     matrix2d_df = matrix2d_df.sort_index(ascending=False)
@@ -158,10 +156,10 @@ def main():
     rasterize(**{
         "csvfile": args.csvfile,
         "output": args.output,
-        "meshcol": 0 if args.meshcol is None else args.meshcol,
-        "valuecol": 1 if args.valuecol is None else args.valuecol,
+        "meshcol": 0 if args.meshcol is None else int(args.meshcol),
+        "valuecol": 1 if args.valuecol is None else int(args.valuecol),
         "aggr_strategy": args.strategy,
-        "nodata": -9999.0 if args.nodata is None else args.nodata,
+        "nodata": -9999.0 if args.nodata is None else float(args.nodata),
         "noheader": args.noheader
     })
 
