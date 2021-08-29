@@ -57,11 +57,11 @@ def get_args():
         description='地域メッシュ単位のデータからラスターデータを生成するスクリプト')
     parser.add_argument('csvfile', help='読み込むCSVファイル')
     parser.add_argument('output', help='データの保存先絶対パス')
-    parser.add_argument('--meshcol', help='メッシュコードのカラムを0から始まる番号、デフォルトは0')
-    parser.add_argument('--valuecol', help='値のカラムを0から始まる番号、デフォルトは1')
+    parser.add_argument('--meshcol', help='メッシュコードの列番号を左から数えた番号で指定、デフォルトは0')
+    parser.add_argument('--valuecol', help='値の列番号を左から数えた番号で指定、デフォルトは1')
     parser.add_argument(
         '--strategy', help='集計方法、mean, median, min, max, stddev, sum')
-    parser.add_argument('--nodata', help='データがないメッシュにセットする値、デフォルトは-9999.0')
+    parser.add_argument('--nodata', help='データがないメッシュにセットする値、デフォルトはnan')
     parser.add_argument(
         '--noheader', help='CSVにヘッダーが無い場合に入力', action='store_true')
     return parser.parse_args()

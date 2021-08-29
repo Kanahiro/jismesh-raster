@@ -31,7 +31,7 @@ optional arguments:
   --meshcol  メッシュコードのカラムを0から始まる番号、デフォルトは0
   --valuecol 値のカラムを0から始まる番号、デフォルトは1
   --strategy 集計方法、mean, median, min, max, stddev, sum
-  --nodata   データがないメッシュにセットする値、デフォルトは-9999.0
+  --nodata   データがないメッシュにセットする値、デフォルトはnan
   --noheader CSVにヘッダーが無い場合に入力
 ```
 
@@ -66,7 +66,7 @@ jismesh-raster meshdata.csv mesh.tif --meshcol 0 --valuecol 7 --strategy sum --n
 ```
 
 -   `meshcol`のデフォルト値は`0`なので、今回の場合省略出来る
--   `nodata`のデフォルト値は`-9999.0`なので、それでもよければ省略出来る
+-   `nodata`のデフォルト値は`nan`なので、それでもよければ省略出来る
 
 ```sh
 jismesh-raster meshdata.csv mesh.tif --valuecol 7 --strategy sum
