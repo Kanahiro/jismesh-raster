@@ -72,7 +72,7 @@ def rasterize(csvfile: str,
               meshcol=0,
               valuecol=1,
               aggr_strategy="",
-              nodata=-9999.0,
+              nodata=None,
               noheader=False):
 
     csv_df = pd.read_csv(
@@ -112,7 +112,7 @@ def rasterize(csvfile: str,
     origin_meshcode = concat_indexes_to_meshcode(min_x_index, max_y_index)
     origin_latlng = ju.to_meshpoint(origin_meshcode, 0.5, 0.5)
 
-    # 存在しないメッシュのリスト
+    # データには存在しないが画像範囲内となるメッシュのリストを生成
     x_indexes = csv_df["x_index"].values
     y_indexes = csv_df["y_index"].values
     append_x_indexes = list(filter(
@@ -124,17 +124,20 @@ def rasterize(csvfile: str,
     matrix2d_df = csv_df[["x_index", "y_index", value_colname]
                          ].pivot(values=value_colname, index='y_index', columns='x_index')
 
-    # 存在しないメッシュを内挿
+    # 不足メッシュを内挿
     if len(append_x_indexes) > 0:
         matrix2d_df = matrix2d_df.join(
             pd.DataFrame(index=[], columns=append_x_indexes))
     if len(append_y_indexes) > 0:
         matrix2d_df = pd.concat([matrix2d_df, pd.DataFrame(
-            index=append_y_indexes, columns=matrix2d_df.columns)]).fillna(float(nodata))
+            index=append_y_indexes, columns=matrix2d_df.columns)])
 
     # メッシュの地図上の配置と同じ2次元配列に並べる
     matrix2d_df = matrix2d_df.sort_index(ascending=False)
     matrix2d_df = matrix2d_df.sort_index(axis=1)
+    if nodata is not None:
+        # 値が指定されているならNaN埋め
+        matrix2d_df = matrix2d_df.fillna(nodata)
 
     image = Image.fromarray(matrix2d_df.values)
     image.save(output)
@@ -159,7 +162,7 @@ def main():
         "meshcol": 0 if args.meshcol is None else int(args.meshcol),
         "valuecol": 1 if args.valuecol is None else int(args.valuecol),
         "aggr_strategy": args.strategy,
-        "nodata": -9999.0 if args.nodata is None else float(args.nodata),
+        "nodata": None if args.nodata is None else float(args.nodata),
         "noheader": args.noheader
     })
 
