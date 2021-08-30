@@ -5,32 +5,38 @@ import jismesh.utils as ju
 from PIL import Image
 
 
-def make_meshinfo(meshcode: str) -> dict:
+def get_meshsize(meshcode: str) -> dict:
     if len(meshcode) == 4:
-        return {
-            "num": 1,
-            "size": (1, 2/3)
-        }
+        return (1, 2/3)
     elif len(meshcode) == 6:
-        return {
-            "num": 2,
-            "size": (1/8, 1/12)
-        }
+        return (1/8, 1/12)
     elif len(meshcode) == 8:
-        return {
-            "num": 3,
-            "size": (1/80, 1/120)
-        }
+        return (1/80, 1/120)
+    elif len(meshcode) == 9:
+        return (1/160, 1/240)
+    elif len(meshcode) == 10:
+        return (1/320, 1/480)
+    elif len(meshcode) == 11:
+        return (1/640, 1/960)
     raise Exception("無効なメッシュコードです")
 
 
-def make_xy_indexing_methods(meshnum: int) -> tuple:
-    if meshnum == 1:
+def make_xy_indexing_methods(meshcode: str) -> tuple:
+    if len(meshcode) == 4:
         return (lambda meshcode: meshcode[2:4], lambda meshcode: meshcode[0:2])
-    elif meshnum == 2:
+    elif len(meshcode) == 6:
         return (lambda meshcode: meshcode[2:4] + meshcode[5], lambda meshcode: meshcode[0:2] + meshcode[4])
-    elif meshnum == 3:
+    elif len(meshcode) == 8:
         return (lambda meshcode: meshcode[2:4] + meshcode[5] + meshcode[7], lambda meshcode: meshcode[0:2] + meshcode[4] + meshcode[6])
+    elif len(meshcode) == 9:
+        return (lambda meshcode: meshcode[2:4] + meshcode[5] + meshcode[7] + (str(int(meshcode[8]) - 2) if int(meshcode[8]) > 2 else meshcode[8]),
+                lambda meshcode: meshcode[0:2] + meshcode[4] + meshcode[6] + str(-(-int(meshcode[8]) // 2)))
+    elif len(meshcode) == 10:
+        return (lambda meshcode: meshcode[2:4] + meshcode[5] + meshcode[7] + (str(int(meshcode[8]) - 2) if int(meshcode[8]) > 2 else meshcode[8]) + (str(int(meshcode[9]) - 2) if int(meshcode[9]) > 2 else meshcode[9]),
+                lambda meshcode: meshcode[0:2] + meshcode[4] + meshcode[6] + str(-(-int(meshcode[8]) // 2)) + str(-(-int(meshcode[9]) // 2)))
+    elif len(meshcode) == 10:
+        return (lambda meshcode: meshcode[2:4] + meshcode[5] + meshcode[7] + (str(int(meshcode[8]) - 2) if int(meshcode[8]) > 2 else meshcode[8]) + (str(int(meshcode[9]) - 2) if int(meshcode[9]) > 2 else meshcode[9]) + (str(int(meshcode[10]) - 2) if int(meshcode[10]) > 2 else meshcode[10]),
+                lambda meshcode: meshcode[0:2] + meshcode[4] + meshcode[6] + str(-(-int(meshcode[8]) // 2)) + str(-(-int(meshcode[9]) // 2))) + str(-(-int(meshcode[10]) // 2))
     raise Exception("無効なメッシュ次数です")
 
 
@@ -41,11 +47,23 @@ def concat_indexes_to_meshcode(x_index: str, y_index: str) -> str:
         return y_index[0:2] + x_index[0:2] + y_index[2] + x_index[2]
     elif len(x_index) == 4:
         return y_index[0:2] + x_index[0:2] + y_index[2] + x_index[2] + y_index[3] + x_index[3]
+    elif len(x_index) == 5:
+        return y_index[0:2] + x_index[0:2] + y_index[2] + x_index[2] + y_index[3] + x_index[3] + str(int(x_index[4]) + 2 * (int(y_index[4]) - 1))
+    elif len(x_index) == 6:
+        return y_index[0:2] + x_index[0:2] + y_index[2] + x_index[2] + y_index[3] + x_index[3] + str(int(x_index[4]) + 2 * (int(y_index[4]) - 1)) + str(int(x_index[5]) + 2 * (int(y_index[5]) - 1))
+    elif len(x_index) == 6:
+        return y_index[0:2] + x_index[0:2] + y_index[2] + x_index[2] + y_index[3] + x_index[3] + str(int(x_index[4]) + 2 * (int(y_index[4]) - 1)) + str(int(x_index[5]) + 2 * (int(y_index[5]) - 1)) + str(int(x_index[6]) + 2 * (int(y_index[6]) - 1))
 
 
 def make_all_indexes(min_index: str, max_index: str) -> list:
     def filtering(code: str):
         if len(code) > 2 and int(code[2]) > 7:
+            return False
+        if len(code) > 4 and (int(code[4]) != 1 and int(code[4]) != 2):
+            return False
+        if len(code) > 5 and (int(code[5]) != 1 and int(code[5]) != 2):
+            return False
+        if len(code) > 6 and (int(code[6]) != 1 and int(code[6]) != 2):
             return False
         return True
     return list(filter(filtering, [str(
@@ -82,24 +100,24 @@ def rasterize(csvfile: str,
     csv_df = csv_df[[meshcode_colname, value_colname]].astype(
         {meshcode_colname: str, value_colname: float})
 
-    if len(csv_df[meshcode_colname]) != len(csv_df[meshcode_colname].unique()):
-        if aggr_strategy == "mean":
-            csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
-        elif aggr_strategy == "median":
-            csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
-        elif aggr_strategy == "min":
-            csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
-        elif aggr_strategy == "max":
-            csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
-        elif aggr_strategy == "stddev":
-            csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
-        elif aggr_strategy == "sum":
-            csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
-
+    if aggr_strategy == "mean":
+        csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
+    elif aggr_strategy == "median":
+        csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
+    elif aggr_strategy == "min":
+        csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
+    elif aggr_strategy == "max":
+        csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
+    elif aggr_strategy == "stddev":
+        csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
+    elif aggr_strategy == "sum":
+        csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
+    else:
         csv_df = csv_df.drop_duplicates(subset=meshcode_colname)
 
-    meshinfo = make_meshinfo(csv_df[meshcode_colname].iloc[0])
-    x_indexing, y_indexing = make_xy_indexing_methods(meshinfo["num"])
+    meshsize = get_meshsize(csv_df[meshcode_colname].iloc[0])
+    x_indexing, y_indexing = make_xy_indexing_methods(
+        csv_df[meshcode_colname].iloc[0])
 
     csv_df["x_index"] = csv_df[meshcode_colname].map(x_indexing)
     csv_df["y_index"] = csv_df[meshcode_colname].map(y_indexing)
@@ -145,10 +163,10 @@ def rasterize(csvfile: str,
     worldfile_path = output.split(".")[0] + ".tfw"
     with open(worldfile_path, mode="w", encoding="utf-8") as f:
         f.write(f"""\
-        {meshinfo["size"][0]}
+        {meshsize[0]}
         0
         0
-        {-meshinfo["size"][1]}
+        {-meshsize[1]}
         {origin_latlng[1]}
         {origin_latlng[0]}
         """.replace(" ", ""))
@@ -162,7 +180,7 @@ def main():
         "meshcol": 0 if args.meshcol is None else int(args.meshcol),
         "valuecol": 1 if args.valuecol is None else int(args.valuecol),
         "aggr_strategy": args.strategy,
-        "nodata": None if args.nodata is None else float(args.nodata),
+        "nodata": -9999.0 if args.nodata is None else float(args.nodata),
         "noheader": args.noheader
     })
 
