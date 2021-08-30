@@ -180,7 +180,7 @@ def main():
         "meshcol": 0 if args.meshcol is None else int(args.meshcol),
         "valuecol": 1 if args.valuecol is None else int(args.valuecol),
         "aggr_strategy": args.strategy,
-        "nodata": None if args.nodata is None else float(args.nodata),
+        "nodata": -9999.0 if args.nodata is None else float(args.nodata),
         "noheader": args.noheader
     })
 
