@@ -2,7 +2,10 @@ name: Test
 
 on:
   push:
-    branches: [ master,develop ]
+    branches: [ master, develop ]
+    paths:
+          - 'jismesh_raster/**'
+          - 'tests/**'
 
 jobs:
   deploy:
