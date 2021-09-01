@@ -52,7 +52,7 @@
 optional arguments:
   --meshcol  メッシュコードのカラムを0から始まる番号、デフォルトは0
   --valuecol 値のカラムを0から始まる番号、デフォルトは1
-  --strategy 集計方法、mean, median, min, max, stddev, sum
+  --method   集計方法、mean, median, min, max, stddev, sum
   --nodata   データがないメッシュにセットする値、デフォルトは-9999.0
   --noheader CSVにヘッダーが無い場合に入力
 ```
@@ -84,17 +84,17 @@ mesh1kmid,prefcode,citycode,year,month,dayflag,timezone,population
 -   データが存在しない部分の値は`-999999.0`とする
 
 ```sh
-jismesh-raster meshdata.csv mesh.tif --meshcol 0 --valuecol 7 --strategy sum --nodata -999999.0
+jismesh-raster meshdata.csv mesh.tif --meshcol 0 --valuecol 7 --method sum --nodata -999999.0
 ```
 
 -   `meshcol`のデフォルト値は`0`なので、今回の場合省略出来る
 -   `nodata`のデフォルト値は`-9999.0`なので、それでもよければ省略出来る
 
 ```sh
-jismesh-raster meshdata.csv mesh.tif --valuecol 7 --strategy sum
+jismesh-raster meshdata.csv mesh.tif --valuecol 7 --method sum
 ```
 
--   `strategy`を指定しない場合に複数行にわたって同一のメッシュコードが存在する場合は、うちひとつのデータがメッシュの値となる
+-   CSV の複数行にわたって同一のメッシュコードが存在する場合に `method`を指定されていないとエラーとなる
 
 以下のような CSV の場合
 
@@ -111,5 +111,5 @@ jismesh-raster meshdata.csv mesh.tif --valuecol 7 --strategy sum
 -   `valuecol`のデフォルト値は`1`なので、上記の場合省略出来る
 
 ```sh
-jismesh-raster meshdata.csv mesh.tif --strategy mean --noheader
+jismesh-raster meshdata.csv mesh.tif --method mean --noheader
 ```

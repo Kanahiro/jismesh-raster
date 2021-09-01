@@ -78,7 +78,7 @@ def get_args():
     parser.add_argument('--meshcol', help='メッシュコードの列番号を左から数えた番号で指定、デフォルトは0')
     parser.add_argument('--valuecol', help='値の列番号を左から数えた番号で指定、デフォルトは1')
     parser.add_argument(
-        '--strategy', help='集計方法、mean, median, min, max, stddev, sum')
+        '--method', help='集計方法、mean, median, min, max, stddev, sum')
     parser.add_argument('--nodata', help='データがないメッシュにセットする値、デフォルトはnan')
     parser.add_argument(
         '--noheader', help='CSVにヘッダーが無い場合に入力', action='store_true')
@@ -89,7 +89,7 @@ def rasterize(csvfile: str,
               output: str,
               meshcol=0,
               valuecol=1,
-              aggr_strategy="",
+              aggr_method=None,
               nodata=None,
               noheader=False):
 
@@ -100,20 +100,24 @@ def rasterize(csvfile: str,
     csv_df = csv_df[[meshcode_colname, value_colname]].astype(
         {meshcode_colname: str, value_colname: float})
 
-    if aggr_strategy == "mean":
+    if aggr_method == "mean":
         csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
-    elif aggr_strategy == "median":
-        csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
-    elif aggr_strategy == "min":
-        csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
-    elif aggr_strategy == "max":
-        csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
-    elif aggr_strategy == "stddev":
-        csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
-    elif aggr_strategy == "sum":
-        csv_df = csv_df.groupby(meshcode_colname).mean().reset_index()
+    elif aggr_method == "median":
+        csv_df = csv_df.groupby(meshcode_colname).median().reset_index()
+    elif aggr_method == "min":
+        csv_df = csv_df.groupby(meshcode_colname).min().reset_index()
+    elif aggr_method == "max":
+        csv_df = csv_df.groupby(meshcode_colname).max().reset_index()
+    elif aggr_method == "stddev":
+        csv_df = csv_df.groupby(meshcode_colname).std().reset_index()
+    elif aggr_method == "sum":
+        csv_df = csv_df.groupby(meshcode_colname).sum().reset_index()
     else:
-        csv_df = csv_df.drop_duplicates(subset=meshcode_colname)
+        if aggr_method is None:
+            if len(csv_df) != len(csv_df[meshcode_colname].unique()):
+                raise Exception("CSVの複数行に同一のメッシュコードが存在する場合、集計方法を指定してください")
+        else:
+            raise Exception("methodの指定が不正です、正しいmethod名を入力してください")
 
     meshsize = get_meshsize(csv_df[meshcode_colname].iloc[0])
     x_indexing, y_indexing = make_xy_indexing_methods(
@@ -179,7 +183,7 @@ def main():
         "output": args.output,
         "meshcol": 0 if args.meshcol is None else int(args.meshcol),
         "valuecol": 1 if args.valuecol is None else int(args.valuecol),
-        "aggr_strategy": args.strategy,
+        "aggr_method": args.method,
         "nodata": -9999.0 if args.nodata is None else float(args.nodata),
         "noheader": args.noheader
     })
