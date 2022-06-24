@@ -2,39 +2,36 @@ import unittest
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from jismesh_raster.rasterize import rasterize  # nopep8
 
 
-noaggr_basename = os.path.join(
-    os.path.dirname(__file__), "fixture", "noaggr")
-noheader_basename = os.path.join(
-    os.path.dirname(__file__), "fixture", "noheader")
-aggr_basename = os.path.join(
-    os.path.dirname(__file__), "fixture", "aggr")
+noaggr_basename = os.path.join(os.path.dirname(__file__), "fixture", "noaggr")
+noheader_basename = os.path.join(os.path.dirname(__file__), "fixture", "noheader")
+aggr_basename = os.path.join(os.path.dirname(__file__), "fixture", "aggr")
+km2_basename = os.path.join(os.path.dirname(__file__), "fixture", "2km")
+km5_basename = os.path.join(os.path.dirname(__file__), "fixture", "5km")
 
 
 def noaggr_rasterize(args):
-    return lambda: rasterize(csvfile=noaggr_basename + ".csv",
-                             output=noaggr_basename + ".tif",
-                             **args)
+    return lambda: rasterize(
+        csvfile=noaggr_basename + ".csv", output=noaggr_basename + ".tif", **args
+    )
 
 
 def noheader_rasterize(args):
-    return lambda: rasterize(csvfile=noheader_basename + ".csv",
-                             output=noheader_basename + ".tif",
-                             **args)
+    return lambda: rasterize(
+        csvfile=noheader_basename + ".csv", output=noheader_basename + ".tif", **args
+    )
 
 
 def aggr_rasterize(args):
-    return lambda: rasterize(csvfile=aggr_basename + ".csv",
-                             output=aggr_basename + ".tif",
-                             **args)
+    return lambda: rasterize(
+        csvfile=aggr_basename + ".csv", output=aggr_basename + ".tif", **args
+    )
 
 
 class TestRasterize(unittest.TestCase):
-
     def test_rasterize(self):
         # 1meshcode:1record csv, with header
         noaggr_rasterize({"meshcol": 0, "valuecol": 7})()
