@@ -229,7 +229,6 @@ def rasterize(
 
     meshname = get_meshname(csv_df[meshcode_colname].iloc[0])
     meshscheme = MESH_SCHEMES[meshname]
-    print(meshname, meshscheme)
     x_indexing, y_indexing = meshscheme["xy_indexing"]
 
     csv_df["x_index"] = csv_df[meshcode_colname].map(x_indexing)
@@ -242,7 +241,6 @@ def rasterize(
 
     origin_meshcode = meshscheme["concat"](min_x_index, max_y_index)
     origin_latlng = ju.to_meshpoint(origin_meshcode, 0.5, 0.5)
-    print(origin_meshcode, origin_latlng, csv_df)
 
     # データには存在しないが画像範囲内となるメッシュのリストを生成
     x_indexes = csv_df["x_index"].values
@@ -281,7 +279,7 @@ def rasterize(
     if nodata is not None:
         # 値が指定されているならNaN埋め
         matrix2d_df = matrix2d_df.fillna(nodata)
-    print(matrix2d_df)
+
     image = Image.fromarray(matrix2d_df.values)
     image.save(output)
 
