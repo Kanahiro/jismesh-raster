@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="jismesh-raster",
-    version="0.3.0",
+    version="0.3.1",
     description="Generate raster from jismesh-based data. jismesh=Japan Standard Mesh",
     author="Kanahiro Iguchi",
     license="MIT",
