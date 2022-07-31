@@ -1,4 +1,5 @@
 import argparse
+import math
 
 import pandas as pd
 import jismesh.utils as ju
@@ -38,11 +39,11 @@ MESH_SCHEMES = {
             lambda meshcode: meshcode[2:4]
             + meshcode[5]
             + meshcode[7]  # 1km
-            + str(int(meshcode[8]) - 1 % 2),
+            + str((int(meshcode[8]) - 1) % 2 + 1),
             lambda meshcode: meshcode[0:2]
             + meshcode[4]
             + meshcode[6]
-            + str(-(-int(meshcode[8]) // 2)),
+            + str(math.ceil(int(meshcode[8]) / 2)),
         ),
         "concat": lambda x_idx, y_idx: y_idx[0:2]
         + x_idx[0:2]
@@ -58,13 +59,13 @@ MESH_SCHEMES = {
             lambda meshcode: meshcode[2:4]
             + meshcode[5]
             + meshcode[7]  # 1km
-            + str((int(meshcode[8]) - 1) % 2)
-            + str((int(meshcode[9]) - 1) % 2),
+            + str((int(meshcode[8]) - 1) % 2 + 1)
+            + str((int(meshcode[9]) - 1) % 2 + 1),
             lambda meshcode: meshcode[0:2]
             + meshcode[4]
             + meshcode[6]
-            + str(-(-int(meshcode[8]) // 2))
-            + str(-(-int(meshcode[9]) // 2)),
+            + str(math.ceil(int(meshcode[8]) / 2))
+            + str(math.ceil(int(meshcode[9]) / 2)),
         ),
         "concat": lambda x_idx, y_idx: y_idx[0:2]
         + x_idx[0:2]
@@ -81,15 +82,15 @@ MESH_SCHEMES = {
             lambda meshcode: meshcode[2:4]
             + meshcode[5]
             + meshcode[7]
-            + str((int(meshcode[8]) - 1) % 2)
-            + str((int(meshcode[9]) - 1) % 2)
-            + str((int(meshcode[10]) - 1) % 2),
+            + str((int(meshcode[8]) - 1) % 2 + 1)
+            + str((int(meshcode[9]) - 1) % 2 + 1)
+            + str((int(meshcode[10]) - 1) % 2 + 1),
             lambda meshcode: meshcode[0:2]
             + meshcode[4]
             + meshcode[6]
-            + str(-(-int(meshcode[8]) // 2))
-            + str(-(-int(meshcode[9]) // 2))
-            + str(-(-int(meshcode[10]) // 2)),
+            + str(math.ceil(int(meshcode[8]) / 2))
+            + str(math.ceil(int(meshcode[9]) / 2))
+            + str(math.ceil(int(meshcode[10]) / 2)),
         ),
         "concat": lambda x_idx, y_idx: y_idx[0:2]
         + x_idx[0:2]
